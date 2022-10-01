@@ -2,9 +2,9 @@ package com.stackroute.user.test.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stackroute.user.model.User;
 import com.stackroute.user.service.UserAuthService;
 import com.stackroute.user.controller.UserAuthController;
+import com.stackroute.user.dao.User;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

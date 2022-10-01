@@ -1,6 +1,24 @@
 package com.stackroute.user.controller;
 
-import com.stackroute.user.service.UserAuthService;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+
+import javax.validation.Valid;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import com.stackroute.user.dto.LoginRequest;
+import com.stackroute.user.dto.LoginResponse;
+import com.stackroute.user.dto.LoginResponse.Status;
+import com.stackroute.user.dto.RegisterRequest;
+import com.stackroute.user.service.UserAuthServiceImpl;
+import com.stackroute.user.util.exception.UserAlreadyExistsException;
+
 
 /*
  * As in this assignment, we are working on creating RESTful web service, hence annotate
@@ -10,16 +28,30 @@ import com.stackroute.user.service.UserAuthService;
  * format. Starting from Spring 4 and above, we can use @RestController annotation which 
  * is equivalent to using @Controller and @ResposeBody annotation
  */
-
+@RestController
+@RequestMapping(UserAuthController.AUTH_API_ENDPOINT)
 public class UserAuthController {
+	
+	 public static final String AUTH_API_ENDPOINT = "/api/v1/auth";
+	  public static final String REGISTER_API = "/register";
+	  public static final String LOGIN_API = "/login";
 
+
+	  
+	 
     /*
 	 * Autowiring should be implemented for the UserAuthService. (Use Constructor-based
 	 * autowiring) Please note that we should not create an object using the new
 	 * keyword
 	 */
+	
+	private final UserAuthServiceImpl userAuthService;
+	
 
-    public UserAuthController(UserAuthService userAuthService) {
+
+    public UserAuthController(UserAuthServiceImpl userAuthService) {
+    	this.userAuthService = userAuthService;
+ 
 	}
 
     /*
@@ -33,7 +65,12 @@ public class UserAuthController {
 	 * 
 	 * This handler method should map to the URL "/api/v1/auth/register" using HTTP POST method
 	 */
-
+    
+    @PostMapping(REGISTER_API)
+    @ResponseStatus(HttpStatus.CREATED)
+    public void registerUser(@Valid @RequestBody RegisterRequest user) throws UserAlreadyExistsException {
+    	userAuthService.saveUser(user.getUser());
+    }
 
 	/* 
 	 * Define a handler method which will authenticate a user by reading the Serialized user
@@ -48,7 +85,23 @@ public class UserAuthController {
 	 * 
 	 * This handler method should map to the URL "/api/v1/auth/login" using HTTP POST method
 	*/
-    
+    @PostMapping(LOGIN_API)
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest user) throws Exception {
+    	
+    	String token = userAuthService.authenticateAndgetAToken(user);
+    	
+        
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("Authorization", token);
+        
+        LoginResponse response = new LoginResponse();
+        response.setStatus(Status.Successful);
+        response.setUsername(user.getUsername());
+        
+        return ResponseEntity.ok()
+          .headers(responseHeaders)
+          .body(response);
+    }
 
 
 }

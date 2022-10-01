@@ -1,14 +1,14 @@
 package com.stackroute.newz.repository;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.stackroute.newz.model.UserNews;
+import com.stackroute.newz.model.News;
 
 /*
 * This class is implementing the MongoRepository interface for Note.
 * Annotate this class with @Repository annotation
 * */
 
-public interface NewsRepository extends MongoRepository<UserNews, String> {
+public interface NewsRepository extends JpaRepository<News, String> {
 
 }

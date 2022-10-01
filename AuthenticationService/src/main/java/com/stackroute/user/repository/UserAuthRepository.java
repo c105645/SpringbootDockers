@@ -1,7 +1,11 @@
 package com.stackroute.user.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.stackroute.user.model.User;
+import org.springframework.stereotype.Repository;
+
+import com.stackroute.user.dao.User;
 
 
 /*
@@ -9,9 +13,10 @@ import com.stackroute.user.model.User;
 * Annotate this class with @Repository annotation
 * */
 
+@Repository
+public interface UserAuthRepository  extends JpaRepository<User, Long>{
 
-public interface UserAuthRepository  extends JpaRepository<User,String>{
+	public Optional<User> findUserByUsername(String username);
 
-	public User findByUserIdAndPassword(String userId, String password);
 
 }

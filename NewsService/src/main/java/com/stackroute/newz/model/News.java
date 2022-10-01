@@ -2,6 +2,9 @@ package com.stackroute.newz.model;
 
 import java.util.Date;
 
+import javax.persistence.Entity;
+
+@Entity
 public class News {
 
 	

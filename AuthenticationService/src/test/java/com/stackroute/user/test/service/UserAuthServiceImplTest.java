@@ -2,7 +2,7 @@ package com.stackroute.user.test.service;
 
 import com.stackroute.user.util.exception.UserAlreadyExistsException;
 import com.stackroute.user.util.exception.UserNotFoundException;
-import com.stackroute.user.model.User;
+import com.stackroute.user.dao.User;
 import com.stackroute.user.repository.UserAuthRepository;
 import com.stackroute.user.service.UserAuthServiceImpl;
 import static org.junit.jupiter.api.Assertions.assertEquals;

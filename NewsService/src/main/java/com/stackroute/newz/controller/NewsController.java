@@ -1,5 +1,13 @@
 package com.stackroute.newz.controller;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import com.stackroute.newz.service.NewsService;
 
 /*
@@ -11,7 +19,12 @@ import com.stackroute.newz.service.NewsService;
  * is equivalent to using @Controller and @ResposeBody annotation
  */
 
+@RestController
+@RequestMapping(NewsController.NEWS_API_ENDPOINT)
 public class NewsController {
+	
+	  public static final String NEWS_API_ENDPOINT = "/api/v1";
+	  public static final String NEWS_API = "/news";
 
 	/*
 	 * Autowiring should be implemented for the NewsService. (Use Constructor-based
@@ -19,9 +32,20 @@ public class NewsController {
 	 * keyword
 	 */
 
-	public NewsController(NewsService newsService) {
+	public NewsController() {
+		
 		
 	}
+	
+	   @GetMapping(NEWS_API)
+	   @ResponseStatus(HttpStatus.OK)
+	   public String getAllNewsItems() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		System.out.println(auth.getPrincipal());
+		return auth.getName();
+
+		   
+	   }
 
 	/*
 	 * Define a handler method which will create a specific news by reading the

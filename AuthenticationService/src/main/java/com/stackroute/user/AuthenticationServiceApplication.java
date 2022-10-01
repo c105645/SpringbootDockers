@@ -1,7 +1,14 @@
 package com.stackroute.user;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Scope;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 /*
  * The @SpringBootApplication annotation is equivalent to using @Configuration, @EnableAutoConfiguration 
@@ -9,6 +16,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 
 @SpringBootApplication
+@EnableAspectJAutoProxy
 public class AuthenticationServiceApplication {
 
 	/*
@@ -19,6 +27,19 @@ public class AuthenticationServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AuthenticationServiceApplication.class, args);
 	}
+	
+	
+	  /**
+	   * Fetches a ModelMapper instance.
+	   *
+	   * @return ModelMapper
+	   */
+	  @Bean // Want a new obj every time
+	  @Scope("prototype")
+	  public ModelMapper modelMapper() {
+		  ModelMapper modelMapper = new ModelMapper();
+		  return modelMapper;
+	  }
 
 }
 
