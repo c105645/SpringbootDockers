@@ -2,7 +2,9 @@ package com.stackroute.newz.service;
 
 import java.util.List;
 
-import com.stackroute.newz.model.News;
+import org.springframework.stereotype.Service;
+
+import com.stackroute.newz.dao.News;
 import com.stackroute.newz.util.exception.NewsNotFoundExeption;
 
 /*
@@ -15,7 +17,7 @@ import com.stackroute.newz.util.exception.NewsNotFoundExeption;
 * future.
 * */
 
-
+@Service
 public class NewsServiceImpl implements NewsService {
 
 	/*

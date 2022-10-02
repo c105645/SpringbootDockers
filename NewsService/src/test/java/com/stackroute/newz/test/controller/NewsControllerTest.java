@@ -8,10 +8,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stackroute.newz.controller.NewsController;
+import com.stackroute.newz.dao.News;
+import com.stackroute.newz.dao.Newssource;
+import com.stackroute.newz.dao.Reminder;
 import com.stackroute.newz.util.exception.NewsNotFoundExeption;
-import com.stackroute.newz.model.Newssource;
-import com.stackroute.newz.model.News;
-import com.stackroute.newz.model.Reminder;
 import com.stackroute.newz.service.NewsService;
 
 import org.mockito.InjectMocks;

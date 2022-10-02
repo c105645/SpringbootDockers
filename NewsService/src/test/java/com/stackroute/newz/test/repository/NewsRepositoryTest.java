@@ -10,10 +10,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import com.stackroute.newz.model.News;
-import com.stackroute.newz.model.Newssource;
-import com.stackroute.newz.model.Reminder;
-import com.stackroute.newz.model.UserNews;
+import com.stackroute.newz.dao.News;
+import com.stackroute.newz.dao.Newssource;
+import com.stackroute.newz.dao.Reminder;
+import com.stackroute.newz.dao.UserNews;
 import com.stackroute.newz.repository.NewsRepository;
 
 import java.util.ArrayList;

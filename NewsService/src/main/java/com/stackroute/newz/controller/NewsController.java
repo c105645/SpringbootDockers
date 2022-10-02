@@ -1,14 +1,21 @@
 package com.stackroute.newz.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.stackroute.newz.service.NewsService;
+import com.stackroute.newz.service.NewsServiceImpl;
+import com.stackroute.newz.util.exception.NewsAlreadyExistsException;
 
 /*
  * As in this assignment, we are working with creating RESTful web service, hence annotate
@@ -31,11 +38,14 @@ public class NewsController {
 	 * autowiring) Please note that we should not create any object using the new
 	 * keyword
 	 */
+	  
+		private final NewsServiceImpl service;
+		
+		public NewsController(NewsServiceImpl service) {
+			this.service = service;
+		}
 
-	public NewsController() {
-		
-		
-	}
+
 	
 	   @GetMapping(NEWS_API)
 	   @ResponseStatus(HttpStatus.OK)
@@ -57,6 +67,13 @@ public class NewsController {
 	 * 
 	 * This handler method should map to the URL "/api/v1/news" using HTTP POST method
 	 */
+	   
+	   @PostMapping(NEWS_API)
+	   @ResponseStatus(HttpStatus.CREATED)
+	   public NewsDto addNewsItem(@Valid @RequestBody NewsDto news) throws NewsAlreadyExistsException {
+		System.out.println(news);
+		return service.addNews(news);  
+	   }
 
 	/*
 	 * Define a handler method which will delete a news from a database.

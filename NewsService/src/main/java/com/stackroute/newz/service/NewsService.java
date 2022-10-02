@@ -2,7 +2,7 @@ package com.stackroute.newz.service;
 
 import java.util.List;
 
-import com.stackroute.newz.model.News;
+import com.stackroute.newz.dao.News;
 import com.stackroute.newz.util.exception.NewsNotFoundExeption;
 
 public interface NewsService {
