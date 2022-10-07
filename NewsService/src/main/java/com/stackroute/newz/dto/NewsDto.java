@@ -3,6 +3,7 @@ package com.stackroute.newz.dto;
 import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -14,9 +15,10 @@ public class NewsDto {
     private Long newsId;
 	
     @NotBlank(message="Title of the news item cannot be blank")
+    @NotNull(message="Title of the news item cannot be blank")
 	private String title;
 	
-    @NotBlank(message="Title of the news item cannot be blank")
+    @NotBlank(message="Author of the news item cannot be blank")
 	private String author;
 	
     @NotBlank(message="Description of the news item cannot be blank")

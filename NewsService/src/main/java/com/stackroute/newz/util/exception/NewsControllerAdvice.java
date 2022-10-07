@@ -37,18 +37,8 @@ public class NewsControllerAdvice  {
 
 		        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
 	    }
-	    
-	    @ExceptionHandler(NewsUnauthorizedException.class)
-	    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-	    public ResponseEntity<Object>  newsUnauthorizedHandler(NewsUnauthorizedException ex, WebRequest req) {
-	    	Map<String, Object> body = new LinkedHashMap<>();
-	        body.put("timestamp", LocalDateTime.now());
-	        body.put("message", ex.getMessage());
-
-	        return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);	 
-	        }
-		    
-		 
+	    	    
+	    @ExceptionHandler(MethodArgumentNotValidException.class) 
 	    @ResponseStatus(HttpStatus.BAD_REQUEST)
 	    public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex, WebRequest req) {
 	    	Map<String, Object> errors = new LinkedHashMap<String, Object>();

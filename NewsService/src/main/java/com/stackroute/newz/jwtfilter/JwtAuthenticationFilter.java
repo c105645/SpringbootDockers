@@ -1,8 +1,10 @@
 package com.stackroute.newz.jwtfilter;
 
 import java.io.IOException;
-
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -13,11 +15,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -47,8 +53,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String jwt = request.getHeader("Authorization");
         try {
             if (jwt == null || jwt.isEmpty()|| !jwt.startsWith("Bearer")) {
-                //filterChain.doFilter(request,response);
-                throw new BadCredentialsException("No Token provided in the request headers");
+
+            	throw new NewsUnauthorizedException("No Token provided in the request headers");
             }
             jwt = jwt.substring(7);
             Claims claims = jwtutil.decodeToken(jwt);
@@ -61,13 +67,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             var auth = new UsernamePasswordAuthenticationToken(username, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(auth);
-            System.out.println("64: " + response);
 
             filterChain.doFilter(request, response);
 
         } catch (Exception e) {
-        	
-        	throw new NewsUnauthorizedException(e.getMessage());
+        	response.setContentType("application/json");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            System.out.println(e.getMessage());
+            response.getWriter().write(e.getMessage());
+            return;
   }
 
 }
@@ -77,8 +85,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
        return request.getServletPath().indexOf("/swagger-") != -1 || request.getServletPath().indexOf("/v3/api-docs") !=-1;
     }
-
-
 }
 
 
