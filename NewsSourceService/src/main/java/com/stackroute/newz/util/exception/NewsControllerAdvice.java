@@ -16,9 +16,9 @@ import org.springframework.http.ResponseEntity;
 @ControllerAdvice
 public class NewsControllerAdvice  {
 	
-	   @ExceptionHandler(NewsNotFoundExeption.class)
+	   @ExceptionHandler(NewsSourceNotCreatedException.class)
 	    @ResponseStatus(HttpStatus.NOT_FOUND)
-	    public ResponseEntity<Object> newsNotFoundHandler(NewsNotFoundExeption ex, WebRequest req) {
+	    public ResponseEntity<Object> newsNotFoundHandler(NewsSourceNotCreatedException ex, WebRequest req) {
 		 Map<String, Object> body = new LinkedHashMap<>();
 	        body.put("timestamp", LocalDateTime.now());
 	        body.put("message", ex.getMessage());
@@ -26,14 +26,14 @@ public class NewsControllerAdvice  {
 	        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
 	    }
 
-	    @ExceptionHandler(NewsAlreadyExistsException.class)
-	    @ResponseStatus(HttpStatus.CONFLICT)
-	    public ResponseEntity<Object>  newsAlreadyExistsHandler(NewsAlreadyExistsException ex, WebRequest req) {
+	    @ExceptionHandler(NewsSourceNotFoundException.class)
+	    @ResponseStatus(HttpStatus.NOT_FOUND)
+	    public ResponseEntity<Object>  newsAlreadyExistsHandler(NewsSourceNotFoundException ex, WebRequest req) {
 	    	 Map<String, Object> body = new LinkedHashMap<>();
 		        body.put("timestamp", LocalDateTime.now());
 		        body.put("message", ex.getMessage());
 
-		        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+		        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
 	    }
 	    	    
 	    @ExceptionHandler(MethodArgumentNotValidException.class) 

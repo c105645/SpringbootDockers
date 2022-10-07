@@ -48,17 +48,17 @@ public class News {
 	private Reminder reminder;
 	
 	@OneToOne
-	private Newssource source;
+	private NewsSource source;
 	
 	private String userId;
 	
 
-	public Newssource getSource() {
+	public NewsSource getSource() {
 		return source;
 	}
 
 
-	public void setSource(Newssource source) {
+	public void setSource(NewsSource source) {
 		this.source = source;
 	}
 

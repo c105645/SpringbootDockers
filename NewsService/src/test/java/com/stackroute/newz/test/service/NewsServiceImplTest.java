@@ -3,7 +3,7 @@ package com.stackroute.newz.test.service;
 
 import com.stackroute.newz.util.exception.NewsNotFoundExeption;
 import com.stackroute.newz.dao.News;
-import com.stackroute.newz.dao.Newssource;
+import com.stackroute.newz.dao.NewsSource;
 import com.stackroute.newz.dao.Reminder;
 import com.stackroute.newz.dao.UserNews;
 import com.stackroute.newz.repository.NewsRepository;
@@ -32,7 +32,7 @@ public class NewsServiceImplTest {
 
     private News news;
     private UserNews userNews;
-    private Newssource newssource;
+    private NewsSource newssource;
     private Reminder reminder;
     @Mock
     private NewsRepository newsRepository;
@@ -47,7 +47,7 @@ public class NewsServiceImplTest {
 
         MockitoAnnotations.initMocks(this);
 
-        newssource = new Newssource();
+        newssource = new NewsSource();
         
         newssource.setNewssourceId("1");
         newssource.setNewssourceName("Cricket-Category");

@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 @Entity
-public class Newssource {
+public class NewsSource {
 	
 	/*
 	 * This class should have five fields
@@ -94,7 +94,7 @@ public class Newssource {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Newssource other = (Newssource) obj;
+		NewsSource other = (NewsSource) obj;
 		return Objects.equals(newssourceId, other.newssourceId);
 	}
 

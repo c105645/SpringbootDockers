@@ -1,8 +1,16 @@
 package com.stackroute.newz.service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
+
+import com.stackroute.newz.dto.NewsSourceDto;
 import com.stackroute.newz.model.NewsSource;
+import com.stackroute.newz.repository.NewsSourceRepository;
+import com.stackroute.newz.util.exception.NewsSourceAlreadyExists;
 import com.stackroute.newz.util.exception.NewsSourceNotFoundException;
 
 /*
@@ -15,51 +23,60 @@ import com.stackroute.newz.util.exception.NewsSourceNotFoundException;
 * future.
 * */
 
-
+@Service
 public class NewsSourceServiceImpl implements NewsSourceService {
 
-	/*
-	 * Autowiring should be implemented for the NewsDao and MongoOperation.
-	 * (Use Constructor-based autowiring) Please note that we should not create any
-	 * object using the new keyword.
-	 */
-
-	/*
-	 * This method should be used to save a newsSource.
-	 */
-
-	@Override
-	public boolean addNewsSource(NewsSource newsSource) {
-		return false;
-	}
-
-	/* This method should be used to delete an existing newsSource. */
-
-	@Override
-	public boolean deleteNewsSource(int newsSourceId) {
-		return false;
-	}
-
-	/* This method should be used to update an existing newsSource. */
 	
-	@Override
-	public NewsSource updateNewsSource(NewsSource newsSource, int newsSourceId) throws NewsSourceNotFoundException {
-		return null;
+	private final NewsSourceRepository repository;
+	private final ModelMapper mapper;
+
+	public NewsSourceServiceImpl(NewsSourceRepository repository, ModelMapper mapper) {
+		this.repository = repository;
+		this.mapper = mapper;
+
 	}
 
-	/* This method should be used to get a specific newsSource for an user. */
-
 	@Override
-	public NewsSource getNewsSourceById(String userId, int newsSourceId) throws NewsSourceNotFoundException {
-		return null;
+	public NewsSourceDto addNewsSource(NewsSourceDto newsSource) {
+		Optional<NewsSource> newsOpt = repository.findNewsByName(newsSource.getNewssourceName());
+        if(newsOpt.isPresent()) {
+        	throw new NewsSourceAlreadyExists("News Source with the provided name already exists");
+        }else {
+        	NewsSource source = mapper.map(newsSource, NewsSource.class);       	   	
+        	NewsSource savedSource = repository.save(source);
+        	return mapper.map(savedSource, NewsSourceDto.class);
+        }	
 	}
 
-	
 	 /* This method should be used to get all newsSource for a specific userId.*/
 
 	@Override
-	public List<NewsSource> getAllNewsSourceByUserId(String createdBy) {
-		return null;
+	public List<NewsSourceDto> getAllNewsSourceByUserId(String createdBy) {
+		List<NewsSource> newsSources = repository.findNewsSourceByUserId(createdBy);
+		return newsSources.stream().map(item -> mapper.map(newsSources, NewsSourceDto.class)).collect(Collectors.toList());
+		
 	}
+
+	@Override
+	public void deleteNewsSource(Long newsSourceId) throws NewsSourceNotFoundException {
+		NewsSource news = repository.findById(newsSourceId).orElseThrow(() -> new NewsSourceNotFoundException("News source with the provided ids don't exist"));
+		repository.deleteById(newsSourceId);
+	}
+
+	@Override
+	public NewsSourceDto updateNewsSource(NewsSourceDto newsSourceDto, Long newsSourceId) throws NewsSourceNotFoundException {
+		repository.findById(newsSourceId).orElseThrow(() -> new NewsSourceNotFoundException("News source with the provided id don't exist"));
+		NewsSource toBeSaved = mapper.map(newsSourceDto, NewsSource.class);
+		NewsSource savedSource = repository.save(toBeSaved);
+		return mapper.map(savedSource, NewsSourceDto.class);
+	}
+
+	@Override
+	public NewsSourceDto getNewsSourceById(String userId, Long newsSourceId) throws NewsSourceNotFoundException {
+		NewsSource source =  repository.findNewsSourceBySourceIdAndUserId(userId, newsSourceId).orElseThrow(() -> new NewsSourceNotFoundException("News source with the provided ids don't exist"));
+		return mapper.map(source, NewsSourceDto.class);
+	}
+
+
 
 }

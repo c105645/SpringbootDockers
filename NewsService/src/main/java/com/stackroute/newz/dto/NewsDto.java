@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.stackroute.newz.dao.Newssource;
+import com.stackroute.newz.dao.NewsSource;
 import com.stackroute.newz.dao.Reminder;
 
 public class NewsDto {

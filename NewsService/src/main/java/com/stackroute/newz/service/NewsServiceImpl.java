@@ -14,7 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.stackroute.newz.dao.News;
-import com.stackroute.newz.dao.Newssource;
+import com.stackroute.newz.dao.NewsSource;
 import com.stackroute.newz.dao.Reminder;
 import com.stackroute.newz.dto.NewsDto;
 import com.stackroute.newz.repository.NewsRepository;
@@ -66,7 +66,7 @@ public class NewsServiceImpl implements NewsService {
         		Reminder savedReminder = reminderRepo.save(news.getReminder());
         	}
         	if(news.getSource() != null) {
-        		Newssource savedSource = sourceRepo.save(news.getSource());
+        		NewsSource savedSource = sourceRepo.save(news.getSource());
         	}         	
         	News savedNews = repository.save(news);
         	NewsDto returnedNews = mapper.map(savedNews, NewsDto.class);

@@ -11,7 +11,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import com.stackroute.newz.dao.News;
-import com.stackroute.newz.dao.Newssource;
+import com.stackroute.newz.dao.NewsSource;
 import com.stackroute.newz.dao.Reminder;
 import com.stackroute.newz.dao.UserNews;
 import com.stackroute.newz.repository.NewsRepository;
@@ -28,7 +28,7 @@ public class NewsRepositoryTest {
     private NewsRepository newsRepository;
 
     private News news;
-    private Newssource newssource;
+    private NewsSource newssource;
     private Reminder reminder;
     private UserNews userNews = new UserNews();
     
@@ -38,7 +38,7 @@ public class NewsRepositoryTest {
     @BeforeEach
     public void setUp() throws Exception {
 
-    	newssource = new Newssource();
+    	newssource = new NewsSource();
         
         newssource.setNewssourceId("1");
         newssource.setNewssourceName("Cricket-Category");

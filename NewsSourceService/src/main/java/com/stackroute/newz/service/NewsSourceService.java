@@ -2,9 +2,14 @@ package com.stackroute.newz.service;
 
 import java.util.List;
 
-import com.stackroute.newz.model.NewsSource;
+import javax.validation.Valid;
+
+import org.springframework.stereotype.Service;
+
+import com.stackroute.newz.dto.NewsSourceDto;
 import com.stackroute.newz.util.exception.NewsSourceNotFoundException;
 
+@Service
 public interface NewsSourceService {
 	
 	/*
@@ -12,14 +17,14 @@ public interface NewsSourceService {
 	 * corresponding Impl classes
 	 */
 
-	boolean addNewsSource(NewsSource newsSource);
+	NewsSourceDto addNewsSource(NewsSourceDto newssource);
 
-	boolean deleteNewsSource(int newsSourceId);
+	void deleteNewsSource(Long newsSourceId) throws NewsSourceNotFoundException;
 
-	NewsSource updateNewsSource(NewsSource newsSource, int newsSourceId) throws NewsSourceNotFoundException;
+	NewsSourceDto updateNewsSource(NewsSourceDto news, Long newsSourceId) throws NewsSourceNotFoundException;
 
-	NewsSource getNewsSourceById(String userId,int newsSourceId) throws NewsSourceNotFoundException;
+	NewsSourceDto getNewsSourceById(String userId, Long newsSourceId) throws NewsSourceNotFoundException;
 
-	List<NewsSource> getAllNewsSourceByUserId(String userId);
+	List<NewsSourceDto> getAllNewsSourceByUserId(String userId);
 	
 }

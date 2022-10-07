@@ -9,7 +9,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stackroute.newz.controller.NewsController;
 import com.stackroute.newz.dao.News;
-import com.stackroute.newz.dao.Newssource;
+import com.stackroute.newz.dao.NewsSource;
 import com.stackroute.newz.dao.Reminder;
 import com.stackroute.newz.util.exception.NewsNotFoundExeption;
 import com.stackroute.newz.service.NewsService;
@@ -41,7 +41,7 @@ class NewsControllerTest {
     @MockBean
     private News news;
     @MockBean
-    private Newssource newssource;
+    private NewsSource newssource;
     @MockBean
     private Reminder reminder;
     @MockBean
@@ -57,7 +57,7 @@ class NewsControllerTest {
 
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(newsController).build();
-        newssource = new Newssource();
+        newssource = new NewsSource();
         
         newssource.setNewssourceId("CNN01");
         newssource.setNewssourceName("CNN");
