@@ -187,7 +187,7 @@ public class NewsSourceController {
 	            @ApiResponse(responseCode = "401", description = "Un-Authorized user", content = {@Content(schema = @Schema(hidden = true))}),
 	            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})
 	    })
-	   public List<NewsSourceDto> GetNewsItemDetailsOfAUser(@PathVariable String userId, @PathVariable Long newssourceId) throws NewsSourceNotFoundException {
+	   public List<NewsSourceDto> GetNewsItemDetailsOfAUser(@PathVariable String userId) throws NewsSourceNotFoundException {
 		   return service.getAllNewsSourceByUserId(userId);  
 	   }
 

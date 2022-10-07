@@ -53,7 +53,7 @@ public class NewsSourceServiceImpl implements NewsSourceService {
 	@Override
 	public List<NewsSourceDto> getAllNewsSourceByUserId(String createdBy) {
 		List<NewsSource> newsSources = repository.findNewsSourceByUserId(createdBy);
-		return newsSources.stream().map(item -> mapper.map(newsSources, NewsSourceDto.class)).collect(Collectors.toList());
+		return newsSources.stream().map(item -> mapper.map(item, NewsSourceDto.class)).collect(Collectors.toList());
 		
 	}
 
