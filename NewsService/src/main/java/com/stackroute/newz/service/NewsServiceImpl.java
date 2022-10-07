@@ -58,14 +58,9 @@ public class NewsServiceImpl implements NewsService {
     //@PreAuthorize("hasRole('ROLE_User')")
 	public NewsDto addNews(NewsDto newsdto) throws NewsAlreadyExistsException {
 		Optional<News> newsOpt = repository.findNewsByTitle(newsdto.getTitle());
-		System.out.println("11");
         if(newsOpt.isPresent()) {
-        	System.out.println(newsOpt.get());
-    		System.out.println("12");
         	throw new NewsAlreadyExistsException("News with the provided title already exists");
         }else {
-    		System.out.println("13");
-
         	News news = mapper.map(newsdto, News.class);
            	if(news.getReminder() != null) {
         		Reminder savedReminder = reminderRepo.save(news.getReminder());
@@ -74,12 +69,7 @@ public class NewsServiceImpl implements NewsService {
         		Newssource savedSource = sourceRepo.save(news.getSource());
         	}         	
         	News savedNews = repository.save(news);
-        	
         	NewsDto returnedNews = mapper.map(savedNews, NewsDto.class);
-        	
-    		System.out.println("16" + returnedNews);
-
-        	       	
     		return returnedNews;
         }						
 	}
@@ -103,7 +93,6 @@ public class NewsServiceImpl implements NewsService {
 		}else {
 			throw new NewsNotFoundExeption("No news exists with given userId");
 		}
-		
 	}
 
 	/*
@@ -124,9 +113,7 @@ public class NewsServiceImpl implements NewsService {
 	@Override
 	@Transactional
 	public NewsDto getNewsByNewsIdAndUserId(String userId, Long newsId) throws NewsNotFoundExeption {
-		System.out.println("getNewsByNewsIdAndUserId");
 		News news = repository.findNewsByNewsIdAndUserId(userId, newsId).orElseThrow(() -> new NewsNotFoundExeption("News with the provided id don't exist"));
-		System.out.println(news);
 		return mapper.map(news, NewsDto.class);
 	}
 
@@ -136,9 +123,7 @@ public class NewsServiceImpl implements NewsService {
 	@Override
 	@Transactional
 	public List<NewsDto> getAllNewsByUserId(String userId) {
-		System.out.println("user: " + userId);
 		List<News> news = repository.findNewsByUserId(userId);
-		System.out.println("newwwwwwsssss: " + news);
 		return news.stream().map(item -> mapper.map(item, NewsDto.class)).collect(Collectors.toList());
 	}
 

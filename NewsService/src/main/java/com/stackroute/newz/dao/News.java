@@ -2,6 +2,7 @@ package com.stackroute.newz.dao;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -43,10 +44,10 @@ public class News {
 	
 	private String urlToImage;
 		
-	@OneToOne
+	@OneToOne (cascade = {CascadeType.REMOVE})
 	private Reminder reminder;
 	
-	@OneToOne
+	@OneToOne (cascade = {CascadeType.REMOVE})
 	private Newssource source;
 	
 	private String userId;

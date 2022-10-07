@@ -18,16 +18,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.stackroute.newz.dao.News;
+import com.stackroute.newz.aspect.ToLog;
 import com.stackroute.newz.dto.NewsDto;
-import com.stackroute.newz.service.NewsService;
 import com.stackroute.newz.service.NewsServiceImpl;
 import com.stackroute.newz.util.exception.NewsAlreadyExistsException;
 import com.stackroute.newz.util.exception.NewsNotFoundExeption;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -66,12 +63,11 @@ public class NewsController {
 		}
 
 
-	
+	   @ToLog
 	   @GetMapping(NEWS_API + NEWS_API_CHECK_IF_AUTHENTICATED)
 	   @ResponseStatus(HttpStatus.OK)
 	   public String checkIfAuthenticated() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		System.out.println(auth.getPrincipal());
 		return auth.getName();
 	   }
 
@@ -85,7 +81,7 @@ public class NewsController {
 	 * 
 	 * This handler method should map to the URL "/api/v1/news" using HTTP POST method
 	 */
-	   
+	   @ToLog
 	   @PostMapping(NEWS_API)
 	   @ResponseStatus(HttpStatus.CREATED)
 	   @Operation(summary = "Add a News Item")
@@ -96,9 +92,7 @@ public class NewsController {
 	            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})
 	    })
 	   public NewsDto addNewsItem(@Valid @RequestBody NewsDto news) throws NewsAlreadyExistsException {
-		System.out.println("Input : " + news);
 		   NewsDto returnedNews =  service.addNews(news);  
-		   System.out.println("Output : " + returnedNews);
 		   return returnedNews;
 	   }
 
@@ -115,7 +109,7 @@ public class NewsController {
 	 * without {}.
 	 * 
 	 */
-	   
+	   @ToLog
 	   @DeleteMapping(NEWS_API + "/{userId}/{newsId}")
 	   @ResponseStatus(HttpStatus.OK)
 	   @Operation(summary = "Delete a News Item")
@@ -143,7 +137,7 @@ public class NewsController {
 	 * 
 	 */
 	   
-	   
+	   @ToLog
 	   @DeleteMapping(NEWS_API + "/{userId}")
 	   @ResponseStatus(HttpStatus.OK)
 	   @Operation(summary = "Delete all news items of a user")
@@ -171,7 +165,7 @@ public class NewsController {
 	 * without {} and "newsid" should be replaced by a valid newsId without {}.
 	 * 
 	 */
-	   
+	   @ToLog
 	   @PutMapping(NEWS_API + "/{userId}/{newsId}")
 	   @ResponseStatus(HttpStatus.OK)
 	   @Operation(summary = "Update a news Item")
@@ -197,6 +191,7 @@ public class NewsController {
 	 * without {} and "newsid" should be replaced by a valid newsId without {}.
 	 * 
 	 */
+	   @ToLog
 	   @GetMapping(NEWS_API + "/{userId}/{newsId}")
 	   @ResponseStatus(HttpStatus.OK)
 	   @Operation(summary = "fetch a news item")
@@ -207,7 +202,6 @@ public class NewsController {
 	            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})
 	    })
 	   public NewsDto GetNewsItemDetails(@PathVariable String userId, @PathVariable Long newsId) throws NewsNotFoundExeption {
-		   System.out.println("GetNewsItemDetails");
 		   return service.getNewsByNewsIdAndUserId(userId, newsId);  
 	   }
 
@@ -232,11 +226,7 @@ public class NewsController {
 	            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})
 	    })
 	   public List<NewsDto> GetNewsItemDetailsOfAUser(@PathVariable String userId) throws NewsNotFoundExeption {
-		  System.out.println("Get all news by user");
 		   List<NewsDto> news = service.getAllNewsByUserId(userId);
-			  System.out.println("Get all news by user 22");
-
-		   System.out.println(news);
 		   return news;  
 	   }
 

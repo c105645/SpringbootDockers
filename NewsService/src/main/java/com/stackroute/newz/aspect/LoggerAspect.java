@@ -36,19 +36,6 @@ public class LoggerAspect {
 	  
 	  
 	  
-	  @AfterReturning(value = "@annotation(ToLog)", returning = "returnedValue")
-	  public void logAfterReturn(JoinPoint joinPoint, Object returnedValue) throws Throwable {
-		 String methodName = joinPoint.getSignature().getName();
-		 Object[] arguments = joinPoint.getArgs();
-		    	    
-	     logger.info("@AfterReturning Aspect");
-		 logger.info("Method " + methodName +
-		       " with parameters " + Arrays.asList(arguments) +
-		       " will execute");		    
-	    logger.info("Logging Aspect: Method executed and returned " + returnedValue);
-	  }
-	  
-	  
 	  
 	  @AfterThrowing(value = "@annotation(ToLog)", throwing = "ex")
 	  public void logAfterThrowing(JoinPoint joinPoint, Exception ex) throws Throwable {
@@ -59,7 +46,7 @@ public class LoggerAspect {
 		 logger.info("Method " + methodName +
 		       " with parameters " + Arrays.asList(arguments) +
 		       " will execute");		    
-	    logger.info("Logging Aspect: Method executed and throwed " + ex);
+	    logger.info("Logging Aspect: Method executed and throwed " + ex.getMessage());
 	  }
 	  
 	  
