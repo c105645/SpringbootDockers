@@ -35,6 +35,16 @@ public class NewsControllerAdvice  {
 
 		        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
 	    }
+	    
+	    @ExceptionHandler(NewsSourceAlreadyExists.class)
+	    @ResponseStatus(HttpStatus.CONFLICT)
+	    public ResponseEntity<Object>  newsAlreadyExistsHandler(NewsSourceAlreadyExists ex, WebRequest req) {
+	    	 Map<String, Object> body = new LinkedHashMap<>();
+		        body.put("timestamp", LocalDateTime.now());
+		        body.put("message", ex.getMessage());
+
+		        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+	    }
 	    	    
 	    @ExceptionHandler(MethodArgumentNotValidException.class) 
 	    @ResponseStatus(HttpStatus.BAD_REQUEST)
