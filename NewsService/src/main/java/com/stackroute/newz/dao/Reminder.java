@@ -19,15 +19,15 @@ public class Reminder {
 	
 	@GeneratedValue
 	@Id
-	private Integer reminderId;
+	private Long reminderId;
 	
 	private LocalDateTime schedule;
 	
-	public Integer getReminderId() {
+	public Long getReminderId() {
 		return reminderId;
 	}
 
-	public void setReminderId(Integer reminderId) {
+	public void setReminderId(Long reminderId) {
 		this.reminderId = reminderId;
 	}
 

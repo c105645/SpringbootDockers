@@ -87,6 +87,8 @@ public class UserAuthController {
 	*/
     @PostMapping(LOGIN_API)
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest user) throws Exception {
+        
+        System.out.println("Auth service");
     	
     	String token = userAuthService.authenticateAndgetAToken(user);
     	

@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 public class NewssourceDto {
 	
-	private String newssourceId;
+	private Long newssourceId;
     
 	@NotBlank(message="Source name cannot be blank")
     private String newssourceName;
@@ -21,11 +21,11 @@ public class NewssourceDto {
 	@JsonSerialize(using = ToStringSerializer.class)
     private LocalDate newssourceCreationDate;
 
-	public String getNewssourceId() {
+	public Long getNewssourceId() {
 		return newssourceId;
 	}
 
-	public void setNewssourceId(String newssourceId) {
+	public void setNewssourceId(Long newssourceId) {
 		this.newssourceId = newssourceId;
 	}
 

@@ -11,7 +11,7 @@ import com.stackroute.newz.dao.Reminder;
 
 public class NewsDto {
 
-    private Integer newsId;
+    private Long newsId;
 	
     @NotBlank(message="Title of the news item cannot be blank")
 	private String title;
@@ -33,17 +33,17 @@ public class NewsDto {
 	
 	private String urlToImage;
 		
-	private Reminder reminder;
+	private ReminderDto reminder;
 	
-	private Newssource source;
+	private NewssourceDto source;
 	
 	private String userId;
 
-	public Integer getNewsId() {
+	public Long getNewsId() {
 		return newsId;
 	}
 
-	public void setNewsId(Integer newsId) {
+	public void setNewsId(Long newsId) {
 		this.newsId = newsId;
 	}
 
@@ -103,19 +103,19 @@ public class NewsDto {
 		this.urlToImage = urlToImage;
 	}
 
-	public Reminder getReminder() {
+	public ReminderDto getReminder() {
 		return reminder;
 	}
 
-	public void setReminder(Reminder reminder) {
+	public void setReminder(ReminderDto reminder) {
 		this.reminder = reminder;
 	}
 
-	public Newssource getSource() {
+	public NewssourceDto getSource() {
 		return source;
 	}
 
-	public void setSource(Newssource source) {
+	public void setSource(NewssourceDto source) {
 		this.source = source;
 	}
 

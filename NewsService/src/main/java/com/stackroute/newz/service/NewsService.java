@@ -2,7 +2,8 @@ package com.stackroute.newz.service;
 
 import java.util.List;
 
-import com.stackroute.newz.dao.News;
+import com.stackroute.newz.dto.NewsDto;
+import com.stackroute.newz.util.exception.NewsAlreadyExistsException;
 import com.stackroute.newz.util.exception.NewsNotFoundExeption;
 
 public interface NewsService {
@@ -12,16 +13,16 @@ public interface NewsService {
 	 * corresponding Impl classes
 	 */
 
-	boolean addNews(News news);
+	NewsDto addNews(NewsDto news) throws NewsAlreadyExistsException;
 
-	boolean deleteNews(String userId, int newsId);
+	boolean deleteNews(String userId, Long newsId) throws NewsNotFoundExeption;
 
-	boolean deleteAllNews(String userId) throws NewsNotFoundExeption;
+	boolean deleteAllNewsOfAUser(String userId) throws NewsNotFoundExeption;
 
-	News updateNews(News news, int id, String userId) throws NewsNotFoundExeption;
+	NewsDto updateNews(NewsDto news, Long id, String userId) throws NewsNotFoundExeption;
 
-	News getNewsByNewsId(String userId, int newsId) throws NewsNotFoundExeption;
+	NewsDto getNewsByNewsIdAndUserId(String userId, Long newsId) throws NewsNotFoundExeption;
 
-	List<News> getAllNewsByUserId(String userId);
+	List<NewsDto> getAllNewsByUserId(String userId);
 
 }

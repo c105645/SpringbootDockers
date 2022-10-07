@@ -9,17 +9,17 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 public class ReminderDto {
 	
-    private Integer reminderId;
+    private Long reminderId;
 	
 	@JsonSerialize(using = ToStringSerializer.class)
     @NotBlank(message="Schedule time of the Reminder cannot be blank")
 	private LocalDateTime schedule;
 
-	public Integer getReminderId() {
+	public Long getReminderId() {
 		return reminderId;
 	}
 
-	public void setReminderId(Integer reminderId) {
+	public void setReminderId(Long reminderId) {
 		this.reminderId = reminderId;
 	}
 

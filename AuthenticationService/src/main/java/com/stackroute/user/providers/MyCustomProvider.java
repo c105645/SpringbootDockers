@@ -30,12 +30,10 @@ public class MyCustomProvider implements AuthenticationProvider  {
 	   
 	  String providedPassword = authentication.getCredentials().toString();
 	  String correctPassword = user.getPassword();
-	  
 
 	  if(!passwordEncoder.matches(providedPassword, correctPassword))
 	   throw new RuntimeException("Incorrect Credentials");
 
-	  	  
 	  Authentication authenticationResult = 
 	    new UsernamePasswordAuthenticationToken(user, authentication.getCredentials(), user.getAuthorities());
 	  

@@ -1,11 +1,16 @@
 package com.stackroute.newz.controller;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -13,9 +18,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.stackroute.newz.dao.News;
+import com.stackroute.newz.dto.NewsDto;
 import com.stackroute.newz.service.NewsService;
 import com.stackroute.newz.service.NewsServiceImpl;
 import com.stackroute.newz.util.exception.NewsAlreadyExistsException;
+import com.stackroute.newz.util.exception.NewsNotFoundExeption;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 /*
  * As in this assignment, we are working with creating RESTful web service, hence annotate
@@ -28,10 +45,13 @@ import com.stackroute.newz.util.exception.NewsAlreadyExistsException;
 
 @RestController
 @RequestMapping(NewsController.NEWS_API_ENDPOINT)
+@SecurityRequirement(name = "api-security-scheme")
 public class NewsController {
 	
 	  public static final String NEWS_API_ENDPOINT = "/api/v1";
 	  public static final String NEWS_API = "/news";
+	  public static final String NEWS_API_CHECK_IF_AUTHENTICATED = "/isAuthenticated";
+
 
 	/*
 	 * Autowiring should be implemented for the NewsService. (Use Constructor-based
@@ -47,14 +67,12 @@ public class NewsController {
 
 
 	
-	   @GetMapping(NEWS_API)
+	   @GetMapping(NEWS_API + NEWS_API_CHECK_IF_AUTHENTICATED)
 	   @ResponseStatus(HttpStatus.OK)
-	   public String getAllNewsItems() {
+	   public String checkIfAuthenticated() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		System.out.println(auth.getPrincipal());
 		return auth.getName();
-
-		   
 	   }
 
 	/*
@@ -70,9 +88,18 @@ public class NewsController {
 	   
 	   @PostMapping(NEWS_API)
 	   @ResponseStatus(HttpStatus.CREATED)
+	   @Operation(summary = "Add a News Item")
+	    @ApiResponses(value = {
+	            @ApiResponse(responseCode = "201", description = "New News Item added", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = NewsDto.class))}),
+	            @ApiResponse(responseCode = "409", description = "News item with the title already exists", content = {@Content(schema = @Schema(hidden = true))}),
+	            @ApiResponse(responseCode = "401", description = "Un-Authorized user", content = {@Content(schema = @Schema(hidden = true))}),
+	            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})
+	    })
 	   public NewsDto addNewsItem(@Valid @RequestBody NewsDto news) throws NewsAlreadyExistsException {
-		System.out.println(news);
-		return service.addNews(news);  
+		System.out.println("Input : " + news);
+		   NewsDto returnedNews =  service.addNews(news);  
+		   System.out.println("Output : " + returnedNews);
+		   return returnedNews;
 	   }
 
 	/*
@@ -88,6 +115,19 @@ public class NewsController {
 	 * without {}.
 	 * 
 	 */
+	   
+	   @DeleteMapping(NEWS_API + "/{userId}/{newsId}")
+	   @ResponseStatus(HttpStatus.OK)
+	   @Operation(summary = "Delete a News Item")
+	    @ApiResponses(value = {
+	            @ApiResponse(responseCode = "200", description = "News Item deleted", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = NewsDto.class))}),
+	            @ApiResponse(responseCode = "404", description = "No News Item exists with the given id", content = {@Content(schema = @Schema(hidden = true))}),
+	            @ApiResponse(responseCode = "401", description = "Un-Authorized user", content = {@Content(schema = @Schema(hidden = true))}),
+	            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})
+	    })
+	   public boolean deleteNewsItem(@PathVariable String userId, @PathVariable Long newsId) throws NewsNotFoundExeption {
+		return service.deleteNews(userId, newsId);  
+	   }
 
 	/*
 	 * Define a handler method which will delete all the news of a specific user from 
@@ -102,6 +142,20 @@ public class NewsController {
 	 * without {}.
 	 * 
 	 */
+	   
+	   
+	   @DeleteMapping(NEWS_API + "/{userId}")
+	   @ResponseStatus(HttpStatus.OK)
+	   @Operation(summary = "Delete all news items of a user")
+	    @ApiResponses(value = {
+	            @ApiResponse(responseCode = "200", description = "News Items deleted", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = NewsDto.class))}),
+	            @ApiResponse(responseCode = "404", description = "No News item exists for the given user", content = {@Content(schema = @Schema(hidden = true))}),
+	            @ApiResponse(responseCode = "401", description = "Un-Authorized user", content = {@Content(schema = @Schema(hidden = true))}),
+	            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})
+	    })
+	   public boolean deleteNewsItemOfAUser(@PathVariable String userId) throws NewsNotFoundExeption {
+		return service.deleteAllNewsOfAUser(userId);  
+	   }
 	
 	/*
 	 * Define a handler method which will update a specific news by reading the
@@ -117,6 +171,19 @@ public class NewsController {
 	 * without {} and "newsid" should be replaced by a valid newsId without {}.
 	 * 
 	 */
+	   
+	   @PutMapping(NEWS_API + "/{userId}/{newsId}")
+	   @ResponseStatus(HttpStatus.OK)
+	   @Operation(summary = "Update a news Item")
+	    @ApiResponses(value = {
+	            @ApiResponse(responseCode = "200", description = "News Items deleted", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = NewsDto.class))}),
+	            @ApiResponse(responseCode = "404", description = "News don't exist with the given ids", content = {@Content(schema = @Schema(hidden = true))}),
+	            @ApiResponse(responseCode = "401", description = "Un-Authorized user", content = {@Content(schema = @Schema(hidden = true))}),
+	            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})
+	    })
+	   public NewsDto updateNewsItem(@RequestBody NewsDto news, @PathVariable String userId, @PathVariable Long newsId) throws NewsNotFoundExeption {
+		   return service.updateNews(news, newsId, userId);  
+	   }
 	
 	/*
 	 * Define a handler method which will get us the specific news by a userId.
@@ -130,7 +197,19 @@ public class NewsController {
 	 * without {} and "newsid" should be replaced by a valid newsId without {}.
 	 * 
 	 */
-	
+	   @GetMapping(NEWS_API + "/{userId}/{newsId}")
+	   @ResponseStatus(HttpStatus.OK)
+	   @Operation(summary = "fetch a news item")
+	    @ApiResponses(value = {
+	            @ApiResponse(responseCode = "200", description = "News Item fetched", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = NewsDto.class))}),
+	            @ApiResponse(responseCode = "404", description = "News item with the given id don't exist", content = {@Content(schema = @Schema(hidden = true))}),
+	            @ApiResponse(responseCode = "401", description = "Un-Authorized user", content = {@Content(schema = @Schema(hidden = true))}),
+	            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})
+	    })
+	   public NewsDto GetNewsItemDetails(@PathVariable String userId, @PathVariable Long newsId) throws NewsNotFoundExeption {
+		   System.out.println("GetNewsItemDetails");
+		   return service.getNewsByNewsIdAndUserId(userId, newsId);  
+	   }
 
 	/*
 	 * Define a handler method which will show details of all news created by specific 
@@ -143,6 +222,22 @@ public class NewsController {
 	 * 
 	 */
 
+	   @GetMapping(NEWS_API + "/{userId}")
+	   @ResponseStatus(HttpStatus.OK)
+	   @Operation(summary = "Fetch all news items of a user")
+	    @ApiResponses(value = {
+	            @ApiResponse(responseCode = "200", description = "News Items deleted", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = NewsDto.class))}),
+	            @ApiResponse(responseCode = "404", description = "No news items exists for the given user", content = {@Content(schema = @Schema(hidden = true))}),
+	            @ApiResponse(responseCode = "401", description = "Un-Authorized user", content = {@Content(schema = @Schema(hidden = true))}),
+	            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})
+	    })
+	   public List<NewsDto> GetNewsItemDetailsOfAUser(@PathVariable String userId) throws NewsNotFoundExeption {
+		  System.out.println("Get all news by user");
+		   List<NewsDto> news = service.getAllNewsByUserId(userId);
+			  System.out.println("Get all news by user 22");
 
+		   System.out.println(news);
+		   return news;  
+	   }
 
 }

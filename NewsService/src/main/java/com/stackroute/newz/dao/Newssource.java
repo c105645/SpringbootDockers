@@ -24,7 +24,7 @@ public class Newssource {
 	 */
 	@Id
 	@GeneratedValue
-    private String newssourceId;
+    private Long newssourceId;
     
     private String newssourceName;
     
@@ -34,11 +34,11 @@ public class Newssource {
     
     private LocalDate newssourceCreationDate;
 
-	public String getNewssourceId() {
+	public Long getNewssourceId() {
 		return newssourceId;
 	}
 
-	public void setNewssourceId(String newssourceId) {
+	public void setNewssourceId(Long newssourceId) {
 		this.newssourceId = newssourceId;
 	}
 

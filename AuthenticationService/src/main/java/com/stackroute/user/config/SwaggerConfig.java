@@ -20,9 +20,7 @@ public class SwaggerConfig {
 	@Bean
 	public OpenAPI customOpenAPI(@Value("${springdoc.version}") String appVersion) {
 		return new OpenAPI()
-				.components(new Components()
-						.addSecuritySchemes("basicScheme",
-						new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("basic")))
+				.components(new Components())
 				.info(new Info().title("News API").version(appVersion)
 						.license(new License().name("NEWS API Ness Technologies").url("http://ness.news.org")));
 	}

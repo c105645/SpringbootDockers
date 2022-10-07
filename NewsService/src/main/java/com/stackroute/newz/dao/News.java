@@ -27,7 +27,7 @@ public class News {
 
 	@Id
 	@GeneratedValue
-	private Integer newsId;
+	private Long newsId;
 	
 	private String title;
 	
@@ -43,7 +43,7 @@ public class News {
 	
 	private String urlToImage;
 		
-	@OneToOne
+	@OneToOne(cascade="cascadeType.REMOVE")
 	private Reminder reminder;
 	
 	@OneToOne
@@ -62,12 +62,12 @@ public class News {
 	}
 
 
-	public Integer getNewsId() {
+	public Long getNewsId() {
 		return newsId;
 	}
 
 
-	public void setNewsId(Integer newsId) {
+	public void setNewsId(Long newsId) {
 		this.newsId = newsId;
 	}
 

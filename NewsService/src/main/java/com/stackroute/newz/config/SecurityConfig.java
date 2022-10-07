@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,6 +21,7 @@ import com.stackroute.newz.jwtfilter.JwtAuthenticationFilter;
 
 @EnableWebSecurity
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 	
     private JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -32,20 +34,23 @@ public class SecurityConfig {
     private String signingKey;
         @Bean
 	    protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        	
-        	 http.addFilterAfter(
-                     jwtAuthenticationFilter,
-                     BasicAuthenticationFilter.class
-                 );
+
               	    	 
 	        http.cors().configurationSource(corsConfiguration())
 	                .and()
 	                .csrf().disable().httpBasic()
 	                .and()
 	                .authorizeRequests()
+	                .antMatchers("/swagger-ui*/**", "/v3/api-docs/**").permitAll()
 	                .anyRequest().authenticated()
 	                .and()
 	                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+	        
+        	
+       	 http.addFilterAfter(
+                    jwtAuthenticationFilter,
+                    BasicAuthenticationFilter.class
+                );
 
 	        return http.build();
 

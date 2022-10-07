@@ -1,10 +1,26 @@
 package com.stackroute.newz.service;
 
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.stackroute.newz.dao.News;
+import com.stackroute.newz.dao.Newssource;
+import com.stackroute.newz.dao.Reminder;
+import com.stackroute.newz.dto.NewsDto;
+import com.stackroute.newz.repository.NewsRepository;
+import com.stackroute.newz.repository.NewssourceRepository;
+import com.stackroute.newz.repository.ReminderRepository;
+import com.stackroute.newz.util.exception.NewsAlreadyExistsException;
 import com.stackroute.newz.util.exception.NewsNotFoundExeption;
 
 /*
@@ -20,55 +36,110 @@ import com.stackroute.newz.util.exception.NewsNotFoundExeption;
 @Service
 public class NewsServiceImpl implements NewsService {
 
-	/*
-	 * Autowiring should be implemented for the NewsDao and MongoOperation.
-	 * (Use Constructor-based autowiring) Please note that we should not create any
-	 * object using the new keyword.
-	 */
+
+	private final NewsRepository repository;
+	private final ReminderRepository reminderRepo;
+	private final NewssourceRepository sourceRepo;
+
+
+	private final ModelMapper mapper;
+	
+	public NewsServiceImpl(NewsRepository repository, ReminderRepository reminderRepo, NewssourceRepository sourceRepo, ModelMapper mapper) {
+		this.repository = repository;
+		this.reminderRepo = reminderRepo;
+		this.sourceRepo = sourceRepo;
+		this.mapper = mapper;
+		
+	} 
 	
 
-	/*
-	 * This method should be used to save a new news.
-	 */
 	@Override
-	public boolean addNews(News news) {
-		return false;
+	@Transactional
+    //@PreAuthorize("hasRole('ROLE_User')")
+	public NewsDto addNews(NewsDto newsdto) throws NewsAlreadyExistsException {
+		Optional<News> newsOpt = repository.findNewsByTitle(newsdto.getTitle());
+		System.out.println("11");
+        if(newsOpt.isPresent()) {
+        	System.out.println(newsOpt.get());
+    		System.out.println("12");
+        	throw new NewsAlreadyExistsException("News with the provided title already exists");
+        }else {
+    		System.out.println("13");
+
+        	News news = mapper.map(newsdto, News.class);
+           	if(news.getReminder() != null) {
+        		Reminder savedReminder = reminderRepo.save(news.getReminder());
+        	}
+        	if(news.getSource() != null) {
+        		Newssource savedSource = sourceRepo.save(news.getSource());
+        	}         	
+        	News savedNews = repository.save(news);
+        	
+        	NewsDto returnedNews = mapper.map(savedNews, NewsDto.class);
+        	
+    		System.out.println("16" + returnedNews);
+
+        	       	
+    		return returnedNews;
+        }						
 	}
 
 	/* This method should be used to delete an existing news. */
-	
-	public boolean deleteNews(String userId, int newsId) {
-		return false;
+	@Override
+	@Transactional
+	public boolean deleteNews(String userId, Long newsId) throws NewsNotFoundExeption {
+		repository.findNewsByNewsIdAndUserId(userId, newsId).orElseThrow(() -> new NewsNotFoundExeption("News with the provided ids don't exist"));
+		int rowsDeleted =  repository.DeleteByUserIdAndNewsId(userId, newsId);
+		return rowsDeleted > 0;
 	}
 
 	/* This method should be used to delete all news for a  specific userId. */
-	
-	public boolean deleteAllNews(String userId) throws NewsNotFoundExeption {
-		return false;
+	@Override
+	@Transactional
+	public boolean deleteAllNewsOfAUser(String userId) throws NewsNotFoundExeption {
+		int count = repository.DeleteByUserId(userId);
+		if(count > 0 ) {
+			return true;
+		}else {
+			throw new NewsNotFoundExeption("No news exists with given userId");
+		}
+		
 	}
 
 	/*
 	 * This method should be used to update a existing news.
 	 */
-
-	public News updateNews(News news, int newsId, String userId) throws NewsNotFoundExeption {
-		return null;
+	@Override
+	@Transactional
+	public NewsDto updateNews(NewsDto news, Long newsId, String userId) throws NewsNotFoundExeption {
+		repository.findNewsByNewsIdAndUserId(userId, newsId).orElseThrow(() -> new NewsNotFoundExeption("News with the provided id don't exist"));
+		News toBeSaved = mapper.map(news, News.class);
+		News savedNews = repository.save(toBeSaved);
+		return mapper.map(savedNews, NewsDto.class);
 	}
 
 	/*
 	 * This method should be used to get a news by newsId created by specific user
 	 */
-
-	public News getNewsByNewsId(String userId, int newsId) throws NewsNotFoundExeption {
-		return null;
+	@Override
+	@Transactional
+	public NewsDto getNewsByNewsIdAndUserId(String userId, Long newsId) throws NewsNotFoundExeption {
+		System.out.println("getNewsByNewsIdAndUserId");
+		News news = repository.findNewsByNewsIdAndUserId(userId, newsId).orElseThrow(() -> new NewsNotFoundExeption("News with the provided id don't exist"));
+		System.out.println(news);
+		return mapper.map(news, NewsDto.class);
 	}
 
 	/*
 	 * This method should be used to get all news for a specific userId.
 	 */
-
-	public List<News> getAllNewsByUserId(String userId) {
-		return null;
+	@Override
+	@Transactional
+	public List<NewsDto> getAllNewsByUserId(String userId) {
+		System.out.println("user: " + userId);
+		List<News> news = repository.findNewsByUserId(userId);
+		System.out.println("newwwwwwsssss: " + news);
+		return news.stream().map(item -> mapper.map(item, NewsDto.class)).collect(Collectors.toList());
 	}
 
 }

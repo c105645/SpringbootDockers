@@ -1,7 +1,11 @@
 package com.stackroute.newz;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
+
 
 
 
@@ -22,4 +26,17 @@ public class NewsServiceApplication {
 		SpringApplication.run(NewsServiceApplication.class, args);
 	}
 
+	  /**
+	   * Fetches a ModelMapper instance.
+	   *
+	   * @return ModelMapper
+	   */
+	  @Bean // Want a new obj every time
+	  @Scope("prototype")
+	  public ModelMapper modelMapper() {
+		  ModelMapper modelMapper = new ModelMapper();
+//		  modelMapper.getConfiguration().setSkipNullEnabled(true);
+		  return modelMapper;
+
+	  }
 }
