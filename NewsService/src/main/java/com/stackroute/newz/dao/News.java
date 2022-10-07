@@ -43,7 +43,7 @@ public class News {
 	
 	private String urlToImage;
 		
-	@OneToOne(cascade="cascadeType.REMOVE")
+	@OneToOne
 	private Reminder reminder;
 	
 	@OneToOne
