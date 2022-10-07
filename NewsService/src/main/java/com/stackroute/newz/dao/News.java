@@ -47,7 +47,7 @@ public class News {
 	@OneToOne (cascade = {CascadeType.REMOVE})
 	private Reminder reminder;
 	
-	@OneToOne (cascade = {CascadeType.REMOVE})
+	@OneToOne
 	private Newssource source;
 	
 	private String userId;

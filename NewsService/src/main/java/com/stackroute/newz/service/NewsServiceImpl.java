@@ -78,21 +78,17 @@ public class NewsServiceImpl implements NewsService {
 	@Override
 	@Transactional
 	public boolean deleteNews(String userId, Long newsId) throws NewsNotFoundExeption {
-		repository.findNewsByNewsIdAndUserId(userId, newsId).orElseThrow(() -> new NewsNotFoundExeption("News with the provided ids don't exist"));
-		int rowsDeleted =  repository.DeleteByUserIdAndNewsId(userId, newsId);
-		return rowsDeleted > 0;
+		News news = repository.findNewsByNewsIdAndUserId(userId, newsId).orElseThrow(() -> new NewsNotFoundExeption("News with the provided ids don't exist"));
+		repository.deleteById(news.getNewsId());
+		return true;
 	}
 
 	/* This method should be used to delete all news for a  specific userId. */
 	@Override
 	@Transactional
 	public boolean deleteAllNewsOfAUser(String userId) throws NewsNotFoundExeption {
-		int count = repository.DeleteByUserId(userId);
-		if(count > 0 ) {
-			return true;
-		}else {
-			throw new NewsNotFoundExeption("No news exists with given userId");
-		}
+		getAllNewsByUserId(userId).stream().forEach(item -> repository.deleteById(item.getNewsId()));
+		return true;
 	}
 
 	/*
