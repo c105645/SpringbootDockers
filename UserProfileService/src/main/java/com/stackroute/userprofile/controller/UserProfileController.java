@@ -1,6 +1,34 @@
 package com.stackroute.userprofile.controller;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.stackroute.userprofile.aspect.ToLog;
+import com.stackroute.userprofile.dto.UserProfileDto;
 import com.stackroute.userprofile.service.UserProfileService;
+import com.stackroute.userprofile.util.exception.UserProfileAlreadyExistsException;
+import com.stackroute.userprofile.util.exception.UserProfileNotFoundException;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 
 /*
  * As in this assignment, we are working on creating RESTful web service, hence annotate
@@ -11,16 +39,26 @@ import com.stackroute.userprofile.service.UserProfileService;
  * is equivalent to using @Controller and @ResposeBody annotation
  */
 
-
+@RestController
+@RequestMapping(UserProfileController.USER_API_ENDPOINT)
+@SecurityRequirement(name = "api-security-scheme")
 public class UserProfileController {
+	
+	 public static final String USER_API_ENDPOINT = "/api/v1";
+	  public static final String USER_API = "/userprofile";
 
 	/*
 	 * Autowiring should be implemented for the UserService. (Use Constructor-based
 	 * autowiring) Please note that we should not create an object using the new
 	 * keyword
 	 */
+	  
+	  private final UserProfileService service;
+		
+	
 
-    public UserProfileController(UserProfileService userProfileService) {
+    public UserProfileController(UserProfileService service) {
+    	this.service = service;
     }
 
 	/*
@@ -34,6 +72,21 @@ public class UserProfileController {
 	 * 
 	 * This handler method should map to the URL "/api/v1/user" using HTTP POST method
 	 */
+    
+    
+	 @ToLog
+	 @PostMapping(USER_API)
+	 @ResponseStatus(HttpStatus.CREATED)
+	   @Operation(summary = "Add a new profile")
+	    @ApiResponses(value = {
+	            @ApiResponse(responseCode = "201", description = "profile added", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserProfileDto.class))}),
+	            @ApiResponse(responseCode = "409", description = "User profile already exists", content = {@Content(schema = @Schema(hidden = true))}),
+	            @ApiResponse(responseCode = "401", description = "Un-Authorized user", content = {@Content(schema = @Schema(hidden = true))}),
+	            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})
+	    })
+	 public UserProfileDto registerUser(@Valid @RequestBody UserProfileDto user) throws UserProfileAlreadyExistsException {
+	    return service.registerUser(user);     	
+   }
    
 
 	/*
@@ -47,6 +100,19 @@ public class UserProfileController {
 	 * 
 	 * This handler method should map to the URL "/api/v1/userprofile/{userid}" using HTTP PUT method.
 	 */
+	 @ToLog
+	 @ResponseStatus(HttpStatus.OK)
+	 @PutMapping(USER_API + "/{userId}")
+	 @Operation(summary = "Update an existing profile")
+	    @ApiResponses(value = {
+	            @ApiResponse(responseCode = "200", description = "profile Updated", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserProfileDto.class))}),
+	            @ApiResponse(responseCode = "404", description = "User profile dont exists", content = {@Content(schema = @Schema(hidden = true))}),
+	            @ApiResponse(responseCode = "401", description = "Un-Authorized user", content = {@Content(schema = @Schema(hidden = true))}),
+	            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})
+	    })	
+	 public UserProfileDto updateUser(@Valid @RequestBody UserProfileDto user, @PathVariable String userId) throws UserProfileNotFoundException {
+	    return service.updateUser(userId, user);     	
+    }
 
 	/*
 	 * Define a handler method which will delete an userprofile from a database.
@@ -60,6 +126,20 @@ public class UserProfileController {
 	 * HTTP Delete method where "userId" should be replaced by a valid userId
 	 * 
 	 */
+	 
+		
+	 @DeleteMapping(USER_API + "/{userId}")
+	 @ResponseStatus(HttpStatus.OK)
+	 @Operation(summary = "Delete a profile")
+	    @ApiResponses(value = {
+	            @ApiResponse(responseCode = "200", description = "profile deleted", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserProfileDto.class))}),
+	            @ApiResponse(responseCode = "404", description = "User profile does not exist", content = {@Content(schema = @Schema(hidden = true))}),
+	            @ApiResponse(responseCode = "401", description = "Un-Authorized user", content = {@Content(schema = @Schema(hidden = true))}),
+	            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})
+	    })	
+	 public void updateUser(@PathVariable String userId) throws UserProfileNotFoundException {
+	    service.deleteUser(userId);     	
+    }
 
 	/*
 	 * Define a handler method which will show details of a specific user. This
@@ -72,6 +152,17 @@ public class UserProfileController {
 	 * HTTP GET method where "id" should be replaced by a valid userId without {}.
 	 */
 
-
+	 @GetMapping(USER_API + "/{userId}")
+	 @ResponseStatus(HttpStatus.OK)
+	 @Operation(summary = "Delete a profile")
+	    @ApiResponses(value = {
+	            @ApiResponse(responseCode = "200", description = "profile fetched", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserProfileDto.class))}),
+	            @ApiResponse(responseCode = "404", description = "User profile does not exist", content = {@Content(schema = @Schema(hidden = true))}),
+	            @ApiResponse(responseCode = "401", description = "Un-Authorized user", content = {@Content(schema = @Schema(hidden = true))}),
+	            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema(hidden = true))})
+	    })	
+	 public UserProfileDto getUser(@PathVariable String userId) throws UserProfileNotFoundException {
+	    return service.getUserById(userId);     	
+    }
 
 }

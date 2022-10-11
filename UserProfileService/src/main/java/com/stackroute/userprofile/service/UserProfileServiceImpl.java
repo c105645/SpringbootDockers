@@ -1,6 +1,14 @@
 package com.stackroute.userprofile.service;
 
+import javax.validation.Valid;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.stackroute.userprofile.dto.UserProfileDto;
 import com.stackroute.userprofile.model.UserProfile;
+import com.stackroute.userprofile.repository.UserProfileRepository;
 import com.stackroute.userprofile.util.exception.UserProfileAlreadyExistsException;
 import com.stackroute.userprofile.util.exception.UserProfileNotFoundException;
 
@@ -13,7 +21,6 @@ import com.stackroute.userprofile.util.exception.UserProfileNotFoundException;
 * better. Additionally, tool support and additional behavior might rely on it in the 
 * future.
 * */
-
 public class UserProfileServiceImpl implements UserProfileService {
 
 	/*
@@ -21,14 +28,31 @@ public class UserProfileServiceImpl implements UserProfileService {
 	 * Constructor-based autowiring) Please note that we should not create any
 	 * object using the new keyword.
 	 */
+	
+	private final UserProfileRepository repository;
+	private final ModelMapper modelMapper;
+	
+	
+	
+	@Autowired
+	public UserProfileServiceImpl(UserProfileRepository repository, 
+			ModelMapper modelMapper) {
+		this.repository = repository;
+		this.modelMapper = modelMapper;
+	}
 
 	/*
 	 * This method should be used to save a new userprofile.Call the corresponding method
 	 * of Respository interface.
 	 */
 
-    public UserProfile registerUser(UserProfile user) throws UserProfileAlreadyExistsException {
-        return null;
+    public UserProfileDto registerUser(UserProfileDto user) throws UserProfileAlreadyExistsException {
+	       repository.findUserProfileByEmail(user.getEmail())
+				.orElseThrow(() -> new UserProfileAlreadyExistsException("User with this email id alredy exists"));
+
+				UserProfile userProfileEntity = modelMapper.map(user, UserProfile.class);
+				UserProfile savedEntity =  repository.save(userProfileEntity);
+				return modelMapper.map(savedEntity, UserProfileDto.class);
     }
 
 	/*
@@ -37,8 +61,10 @@ public class UserProfileServiceImpl implements UserProfileService {
 	 */
 
     @Override
-    public UserProfile updateUser(String userId, UserProfile user) throws UserProfileNotFoundException {
-    	return null;
+    public UserProfileDto updateUser(String userId, UserProfileDto user) throws UserProfileNotFoundException {
+    	repository.findById(userId).orElseThrow(() -> new UserProfileNotFoundException("User not found"));;
+		UserProfile userEntity = repository.save(modelMapper.map(user, UserProfile.class));
+		return modelMapper.map(userEntity, UserProfileDto.class);
     }
 
 	/*
@@ -47,8 +73,9 @@ public class UserProfileServiceImpl implements UserProfileService {
 	 */
 
     @Override
-    public boolean deleteUser(String userId) throws UserProfileNotFoundException {
-        return false;
+    public void deleteUser(String userId) throws UserProfileNotFoundException {
+    	repository.findById(userId).orElseThrow(() -> new UserProfileNotFoundException("User Not Found"));
+		repository.deleteById(userId);	
     }
     
 	/*
@@ -57,7 +84,10 @@ public class UserProfileServiceImpl implements UserProfileService {
 	 */
 
     @Override
-    public UserProfile getUserById(String userId) throws UserProfileNotFoundException {
-    	return null;
+    public UserProfileDto getUserById(String userId) throws UserProfileNotFoundException {
+    	UserProfile user = repository.findById(userId).orElseThrow(() -> new UserProfileNotFoundException("user not found"));
+		return modelMapper.map(user, UserProfileDto.class);
     }
+
+	
 }

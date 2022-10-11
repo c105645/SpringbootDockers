@@ -2,10 +2,15 @@ package com.stackroute.userprofile.service;
 
 
 
-import com.stackroute.userprofile.model.UserProfile;
+import javax.validation.Valid;
+
+import org.springframework.stereotype.Service;
+
+import com.stackroute.userprofile.dto.UserProfileDto;
 import com.stackroute.userprofile.util.exception.UserProfileAlreadyExistsException;
 import com.stackroute.userprofile.util.exception.UserProfileNotFoundException;
 
+@Service
 public interface UserProfileService {
 
 	/*
@@ -13,13 +18,13 @@ public interface UserProfileService {
 	 * corresponding Impl classes
 	 */
 
-  UserProfile registerUser(UserProfile user) throws UserProfileAlreadyExistsException;
+	UserProfileDto registerUser(UserProfileDto user) throws UserProfileAlreadyExistsException;
 
-  UserProfile updateUser(String userId,UserProfile user) throws UserProfileNotFoundException;
+  UserProfileDto updateUser(String userId,@Valid UserProfileDto user) throws UserProfileNotFoundException;
 
-  boolean deleteUser(String userId) throws UserProfileNotFoundException;
+  void deleteUser(String userId) throws UserProfileNotFoundException;
 
-  UserProfile getUserById(String userId) throws UserProfileNotFoundException;
+  UserProfileDto getUserById(String userId) throws UserProfileNotFoundException;
 
 
 	

@@ -1,31 +1,17 @@
-package com.stackroute.userprofile.model;
+package com.stackroute.userprofile.dto;
 
 import java.time.LocalDateTime;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import java.util.Objects;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-/*
- * Please note that this class is annotated with @Document annotation
- * @Document identifies a domain object to be persisted to MongoDB.
- *  
- */
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
-public class UserProfile {
-
-	/*
-	 * This class should have six fields (userId,firstName,
-	 * lastName,contact,email,createdAt). Out of these six fields, the field
-	 * userId should be annotated with @Id (This annotation explicitly specifies the document
-	 * identifier). This class should also contain the getters and setters for the
-	 * fields, along with the no-arg , parameterized constructor and toString
-	 * method.The value of createdAt should not be accepted from the user but
-	 * should be always initialized with the system date.
-	 */
-
-    @Id
-    
+public class UserProfileDto {
+	
 	private String userId;
     
     @NotBlank(message="First Name cannot be Blank")
@@ -37,10 +23,11 @@ public class UserProfile {
     @NotBlank(message="Contact cannot be Blank")
     private String contact;
     
+    @JsonSerialize(using = ToStringSerializer.class)
     private LocalDateTime createdAt;
     
-    @Email(message = "Email should be valid")
-    private String email;
+	@Email(message = "Email shuld be valid")
+	private String email;
 
 	public String getUserId() {
 		return userId;
@@ -92,23 +79,28 @@ public class UserProfile {
 
 	@Override
 	public String toString() {
-		return "UserProfile [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", contact="
+		return "UserProfileDto [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", contact="
 				+ contact + ", createdAt=" + createdAt + ", email=" + email + "]";
 	}
-	
+
 	@Override
 	public int hashCode() {
-		return 41;
+		return Objects.hash(email);
 	}
-
-
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
-	if(!(obj instanceof UserProfile)) return false;
-		UserProfile other = (UserProfile) obj;
-		return userId != null && userId.equals(other.userId);
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UserProfileDto other = (UserProfileDto) obj;
+		return Objects.equals(email, other.email);
 	}
+	
+	
+
 
 }
