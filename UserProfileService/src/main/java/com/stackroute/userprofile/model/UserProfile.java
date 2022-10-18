@@ -1,6 +1,8 @@
 package com.stackroute.userprofile.model;
 
 import java.time.LocalDateTime;
+
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
@@ -11,7 +13,7 @@ import javax.validation.constraints.NotBlank;
  * @Document identifies a domain object to be persisted to MongoDB.
  *  
  */
-
+@Entity
 public class UserProfile {
 
 	/*

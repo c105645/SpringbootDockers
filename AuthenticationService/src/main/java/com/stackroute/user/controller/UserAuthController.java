@@ -19,6 +19,8 @@ import com.stackroute.user.dto.RegisterRequest;
 import com.stackroute.user.service.UserAuthServiceImpl;
 import com.stackroute.user.util.exception.UserAlreadyExistsException;
 
+import reactor.core.publisher.Mono;
+
 
 /*
  * As in this assignment, we are working on creating RESTful web service, hence annotate
@@ -86,23 +88,26 @@ public class UserAuthController {
 	 * This handler method should map to the URL "/api/v1/auth/login" using HTTP POST method
 	*/
     @PostMapping(LOGIN_API)
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest user) throws Exception {
+    public Mono<ResponseEntity<LoginResponse>> login(@RequestBody LoginRequest user) throws Exception {
         
         System.out.println("Auth service");
     	
-    	String token = userAuthService.authenticateAndgetAToken(user);
+    	Mono<String> token = userAuthService.authenticateAndgetAToken(user);
     	
+    	return token.map(tk -> {
+    	    HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.set("Authorization", tk);
+            
+            LoginResponse response = new LoginResponse();
+            response.setStatus(Status.Successful);
+            response.setUsername(user.getUsername());
+            
+            return ResponseEntity.ok()
+              .headers(responseHeaders)
+              .body(response);
+    	});
         
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set("Authorization", token);
-        
-        LoginResponse response = new LoginResponse();
-        response.setStatus(Status.Successful);
-        response.setUsername(user.getUsername());
-        
-        return ResponseEntity.ok()
-          .headers(responseHeaders)
-          .body(response);
+       
     }
 
 

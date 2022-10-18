@@ -13,12 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 
 import com.stackroute.userprofile.aspect.ToLog;
 import com.stackroute.userprofile.dto.UserProfileDto;
-import com.stackroute.userprofile.service.UserProfileService;
+import com.stackroute.userprofile.service.UserProfileServiceImpl;
 import com.stackroute.userprofile.util.exception.UserProfileAlreadyExistsException;
 import com.stackroute.userprofile.util.exception.UserProfileNotFoundException;
 
@@ -53,11 +52,11 @@ public class UserProfileController {
 	 * keyword
 	 */
 	  
-	  private final UserProfileService service;
+	  private final UserProfileServiceImpl service;
 		
 	
 
-    public UserProfileController(UserProfileService service) {
+    public UserProfileController(UserProfileServiceImpl service) {
     	this.service = service;
     }
 

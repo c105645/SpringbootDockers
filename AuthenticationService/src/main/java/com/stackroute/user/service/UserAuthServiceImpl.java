@@ -4,6 +4,9 @@ import com.stackroute.user.util.JWT.JwtTokenUtil;
 import com.stackroute.user.util.exception.UserAlreadyExistsException;
 import com.stackroute.user.util.exception.UserIdAndPasswordMismatchException;
 import com.stackroute.user.util.exception.UserNotFoundException;
+
+import reactor.core.publisher.Mono;
+
 import com.stackroute.user.dao.User;
 import com.stackroute.user.dto.LoginRequest;
 import com.stackroute.user.dto.MyUserDetails;
@@ -11,7 +14,9 @@ import com.stackroute.user.dto.UserDto;
 import com.stackroute.user.repository.UserAuthRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -51,11 +56,11 @@ public class UserAuthServiceImpl implements UserAuthService {
 	private final UserAuthRepository userAuthRepo;
 	private final ModelMapper modelMapper;
 	private final PasswordEncoder passwordEncoder;
-	private final AuthenticationManager manager;
+	private final ReactiveAuthenticationManager manager;
 	private final JwtTokenUtil jwtutilservice;
 
 	public UserAuthServiceImpl(UserAuthRepository userAuthRepo, ModelMapper modelMapper, PasswordEncoder passwordEncoder,
-			AuthenticationManager manager,
+	        ReactiveAuthenticationManager manager,
 			JwtTokenUtil jwtutilservice) { 
 		this.userAuthRepo = userAuthRepo;
 		this.modelMapper = modelMapper;
@@ -88,11 +93,10 @@ public class UserAuthServiceImpl implements UserAuthService {
     }
 
 	@Override
-	public String authenticateAndgetAToken(LoginRequest user) throws UserNotFoundException {
-		Authentication a = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
-        Authentication auth = manager.authenticate(a);
-        String token = "Bearer " + jwtutilservice.generateToken(auth);
-        return token;
+	public Mono<String> authenticateAndgetAToken(LoginRequest user) throws UserNotFoundException {
+		Authentication a = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());                
+        return manager.authenticate(a).map(auth -> String.valueOf("Bearer " + jwtutilservice.generateToken(auth)));
+  
 	}
 
 }

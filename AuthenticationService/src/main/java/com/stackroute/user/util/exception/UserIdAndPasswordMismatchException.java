@@ -1,6 +1,6 @@
 package com.stackroute.user.util.exception;
 
-public class UserIdAndPasswordMismatchException extends Exception {
+public class UserIdAndPasswordMismatchException extends RuntimeException {
 
 
 	private static final long serialVersionUID = 1L;

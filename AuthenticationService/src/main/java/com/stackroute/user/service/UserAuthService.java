@@ -3,6 +3,9 @@ package com.stackroute.user.service;
 import com.stackroute.user.util.exception.UserAlreadyExistsException;
 import com.stackroute.user.util.exception.UserIdAndPasswordMismatchException;
 import com.stackroute.user.util.exception.UserNotFoundException;
+
+import reactor.core.publisher.Mono;
+
 import com.stackroute.user.dao.User;
 import com.stackroute.user.dto.LoginRequest;
 import com.stackroute.user.dto.UserDto;
@@ -15,6 +18,6 @@ public interface UserAuthService {
 	 */
     boolean saveUser(UserDto user) throws UserAlreadyExistsException;
     
-    String authenticateAndgetAToken(LoginRequest user) throws UserNotFoundException;
+    Mono<String> authenticateAndgetAToken(LoginRequest user) throws UserNotFoundException;
 
 }

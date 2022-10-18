@@ -21,6 +21,7 @@ import com.stackroute.userprofile.util.exception.UserProfileNotFoundException;
 * better. Additionally, tool support and additional behavior might rely on it in the 
 * future.
 * */
+@Service
 public class UserProfileServiceImpl implements UserProfileService {
 
 	/*

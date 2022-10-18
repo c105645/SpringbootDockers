@@ -116,9 +116,10 @@
 
 
 	<modules>
-		<module>NewsService</module>
-		<module>NewsSourceService</module>
-		<module>AuthenticationService</module>
-		<module>UserProfileService</module>
+		<module>news-service</module>
+		<module>newssource-service</module>
+		<module>authentication-service</module>
+		<module>userprofile-service</module>
+		<module>eureka-server</module>		
 	</modules>
 </project>

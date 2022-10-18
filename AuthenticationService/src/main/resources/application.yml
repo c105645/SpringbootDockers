@@ -1,0 +1,69 @@
+jwt:
+  signing:
+    key: ymLTU8rq83j4fmJZj60wh4OrMNuntIj4fmJ  
+springdoc:
+  version: 1.6.11
+server:
+  port: 8080
+spring:
+  cloud:
+    gateway:
+        routes: 
+        - id: news-service
+          uri: lb://news-service
+
+          predicates:
+            - Path=/api/v1/news/**
+
+          filters:
+            - JwtAuthenticationFilter
+                       
+                       
+        - id: newssource-service
+          uri: lb://newssource-service
+
+          predicates:
+            - Path=/api/v1/newssource/**
+
+          filters:
+            - JwtAuthenticationFilter
+          
+          
+        - id: userprofile-service
+          uri: lb://userprofile-service
+
+          predicates:
+            - Path=/api/v1/userprofile/**
+
+          filters:
+            - JwtAuthenticationFilter
+          
+  datasource:
+    username: root
+    url: jdbc:mysql://localhost:3306/newsdb
+    password: Vihaan@2020
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+  application:
+    name: authentication-service
+  jackson:
+    serialization:
+      fail-on-empty-beans: 'false'                       
+eureka:
+  instance:
+    preferIpAddress: 'true'
+  client:
+    fetchRegistry: 'true'
+    registerWithEureka: 'true'
+    serviceUrl:
+      defaultZone: http://localhost:8070/eureka/
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    

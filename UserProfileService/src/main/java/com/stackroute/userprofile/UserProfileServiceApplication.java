@@ -1,20 +1,20 @@
 package com.stackroute.userprofile;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
-
-import com.stackroute.userprofile.jwtfilter.JwtFilter;
-
 /*
  * The @SpringBootApplication annotation is equivalent to using @Configuration, @EnableAutoConfiguration 
  * and @ComponentScan with their default attributes
  */
+import org.springframework.context.annotation.Scope;
 
 
 
 @SpringBootApplication
+@EnableEurekaClient
 public class UserProfileServiceApplication {
 
 	/*
@@ -23,12 +23,7 @@ public class UserProfileServiceApplication {
 	 * Also specifies the Url patterns for registration bean.
 	 */
 
-
-    @Bean
-    public FilterRegistrationBean<JwtFilter> jwtFilter() {
-        return null;
-    }
-    
+   
 	/*
 	 * 
 	 * You need to run SpringApplication.run, because this method start whole spring
@@ -38,5 +33,19 @@ public class UserProfileServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(UserProfileServiceApplication.class, args);
 	}
+	
+	
+	   
+    /**
+     * Fetches a ModelMapper instance.
+     *
+     * @return ModelMapper
+     */
+    @Bean // Want a new obj every time
+    @Scope("prototype")
+    public ModelMapper modelMapper() {
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper;
+    }
 
 }
