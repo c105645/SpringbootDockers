@@ -19,7 +19,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>11</java.version>
-		<spring-cloud.version>2021.0.4</spring-cloud.version>		
+		<spring-cloud.version>2021.0.4</spring-cloud.version>	
+		<registryUsername>user</registryUsername>
+		<registryToken>password</registryToken>
+		<registryUrl>ghcr.io</registryUrl>
+		<imageName>newssource-service</imageName>	
 	</properties>
 
 
@@ -66,6 +70,22 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+                    <image>
+                        <name>${imageName}</name>
+                           <env>
+                             <BP_JVM_VERSION>11.*</BP_JVM_VERSION>
+                           </env>
+                        <publish>true</publish>
+                    </image>
+                    <docker>
+                        <publishRegistry>
+                            <username>${registryUsername}</username>
+                            <password>${registryToken}</password>
+                            <url>${registryUrl}</url>
+                        </publishRegistry>
+                    </docker>
+                </configuration>
 			</plugin>
 		</plugins>
 	</build>

@@ -10,9 +10,9 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>UserProfileService</artifactId>
+	<artifactId>userprofile-service</artifactId>
 	<packaging>jar</packaging>
-	<name>UserProfileService</name>
+	<name>userprofile-service</name>
 	<description> Assignment NewsApp step5  using multi service , mongodb</description>
 
 	<properties>
@@ -20,6 +20,10 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>11</java.version>
 		<spring-cloud.version>2021.0.4</spring-cloud.version>
+		<registryUsername>user</registryUsername>
+		<registryToken>password</registryToken>
+		<registryUrl>ghcr.io</registryUrl>
+		<imageName>userprofile-service</imageName>
 	</properties>
 
 
@@ -59,6 +63,22 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+                    <image>
+                        <name>${imageName}</name>
+                           <env>
+                             <BP_JVM_VERSION>11.*</BP_JVM_VERSION>
+                           </env>
+                        <publish>true</publish>
+                    </image>
+                    <docker>
+                        <publishRegistry>
+                            <username>${registryUsername}</username>
+                            <password>${registryToken}</password>
+                            <url>${registryUrl}</url>
+                        </publishRegistry>
+                    </docker>
+                </configuration>
 			</plugin>
 		</plugins>
 	</build>

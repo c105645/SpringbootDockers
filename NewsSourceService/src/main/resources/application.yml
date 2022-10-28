@@ -19,7 +19,7 @@ spring:
   datasource:
     password: Vihaan@2020
     username: root
-    url: jdbc:mysql://localhost:3306/newsdb
+    url: jdbc:mysql://newsdb-mysql:3306/newsdb
   jackson:
     serialization:
       fail-on-empty-beans: 'false'
@@ -30,4 +30,4 @@ eureka:
     fetchRegistry: 'true'
     registerWithEureka: 'true'
     serviceUrl:
-      defaultZone: http://localhost:8070/eureka/
+      defaultZone: http://eureka-service:8070/eureka/
