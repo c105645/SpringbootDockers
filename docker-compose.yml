@@ -19,7 +19,7 @@ services:
       - 8080:8080   
     environment:
       - BPL_JVM_THREAD_COUNT=50
-      - SPRING_DATASOURCE_URL=jdbc:mysql://newsdb-mysql:3306/newsdb
+      - SPRING_DATASOURCE_URL=jdbc:mysql://newsdb-mysql/newsdb
       - SPRING_PROFILES_ACTIVE=testdata
       
   news-service:
@@ -31,7 +31,7 @@ services:
       - 8090:8090 
     environment:
       - BPL_JVM_THREAD_COUNT=50
-      - SPRING_DATASOURCE_URL=jdbc:mysql://newsdb-mysql:3306/newsdb
+      - SPRING_DATASOURCE_URL=jdbc:mysql://newsdb-mysql/newsdb
       - SPRING_PROFILES_ACTIVE=testdata
  
   newssource-service:
@@ -43,7 +43,7 @@ services:
       - 9000:9000  
     environment:
       - BPL_JVM_THREAD_COUNT=50
-      - SPRING_DATASOURCE_URL=jdbc:mysql://newsdb-mysql:3306/newsdb
+      - SPRING_DATASOURCE_URL=jdbc:mysql://newsdb-mysql/newsdb
       - SPRING_PROFILES_ACTIVE=testdata
  
   userprofile-service:
@@ -55,7 +55,7 @@ services:
       - 9010:9010    
     environment:
       - BPL_JVM_THREAD_COUNT=50
-      - SPRING_DATASOURCE_URL=jdbc:mysql://newsdb-mysql:3306/newsdb
+      - SPRING_DATASOURCE_URL=jdbc:mysql://newsdb-mysql/newsdb
       - SPRING_PROFILES_ACTIVE=testdata
  
   newsdb-mysql:
